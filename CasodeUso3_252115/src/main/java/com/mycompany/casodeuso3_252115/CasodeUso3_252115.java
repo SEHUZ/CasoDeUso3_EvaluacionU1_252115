@@ -4,6 +4,10 @@
 
 package com.mycompany.casodeuso3_252115;
 
+import controllers.ControlInscripcion;
+import models.GestorDeInscripcion;
+import views.PantallaListaTalleres;
+
 /**
  *
  * @author sonic
@@ -11,6 +15,9 @@ package com.mycompany.casodeuso3_252115;
 public class CasodeUso3_252115 {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        GestorDeInscripcion modelo = new GestorDeInscripcion();
+        ControlInscripcion control = new ControlInscripcion(modelo);
+        PantallaListaTalleres pantalla = new PantallaListaTalleres(control);
+        pantalla.setVisible(true);
     }
 }
