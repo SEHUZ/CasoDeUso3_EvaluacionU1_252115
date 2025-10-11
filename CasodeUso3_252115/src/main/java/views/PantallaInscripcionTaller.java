@@ -7,8 +7,6 @@ package views;
 import controllers.ControlInscripcion;
 import excepciones.InscripcionException;
 import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -19,6 +17,7 @@ import models.Taller;
 /**
  *
  * @author sonic
+ * Vista para manejar la inscripcion de un alumno en un taller especifico.
  */
 public class PantallaInscripcionTaller extends javax.swing.JFrame {
 
@@ -32,6 +31,8 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
     public PantallaInscripcionTaller(ControlInscripcion control, Taller taller) {
         this.control = control;
         this.tallerAInscribir = taller;
+        
+        
 
         initComponents();
         configuracionInicial();
@@ -41,12 +42,11 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
         this.setTitle("Inscribir en: " + tallerAInscribir.getNombreTaller());
         this.setLocationRelativeTo(null);
 
-        // El área de texto no se puede editar manualmente
+        // El area de texto no se puede editar manualmente
         txtArea.setEditable(false);
-        // El botón de confirmar está deshabilitado al inicio
+        // El botón de confirmar esta deshabilitado al inicio
         btnConfirmar.setEnabled(false);
 
-        // --- LÓGICA DE BÚSQUEDA DINÁMICA ---
         // Se añade un listener al campo de texto para reaccionar mientras el usuario escribe.
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -67,24 +67,24 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
     }
 
     /**
-     * Busca al alumno usando el ID del textfield y actualiza la UI. Este método
+     * Busca al alumno con el id del textField. Este método
      * es llamado cada vez que el texto cambia.
      */
     private void buscarAlumno() {
         String idAlumno = textField.getText().trim();
 
         try {
-            // Le pedimos al controlador que busque al alumno
+            // controlador busca al alumno
             Alumno alumno = control.buscarAlumnoPorId(idAlumno);
-            this.alumnoEncontrado = alumno; // Guardamos la referencia
+            this.alumnoEncontrado = alumno;
 
-            // Si lo encuentra, mostramos sus datos y habilitamos el botón
+            // Si lo encuentra, mostramos sus datos y habilitamos el boton
             txtArea.setForeground(Color.BLUE);
             txtArea.setText(formatearDatosAlumno(alumno));
             btnConfirmar.setEnabled(true);
 
         } catch (InscripcionException ex) {
-            // Si no lo encuentra o el ID está vacío, reseteamos
+            // Si no lo encuentra o el id esta vacio, reseteamos
             this.alumnoEncontrado = null;
             txtArea.setForeground(Color.RED);
             txtArea.setText(ex.getMessage());
@@ -93,12 +93,12 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
     }
 
     private String formatearDatosAlumno(Alumno alumno) {
-        return "===== DATOS DEL ALUMNO ENCONTRADO =====\n\n"
+        return "============ DATOS DEL ALUMNO ENCONTRADO ============\n\n"
                 + "ID: \t" + alumno.getIdAlumno() + "\n"
                 + "Nombre: \t" + alumno.getNombreCompleto() + "\n"
                 + "Semestre: \t" + alumno.getSemestre() + "\n"
                 + "Programa: \t" + alumno.getProgramaEducativo() + "\n\n"
-                + "======================================\n"
+                + "=======================================================\n"
                 + "Presione 'Confirmar' para generar el ticket de su inscripcion.";
     }
 
@@ -119,7 +119,7 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         btnConfirmar = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("Ingresa el ID del alumno a inscribir:");
@@ -128,6 +128,7 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
 
         jLabel2.setText("ID:");
 
+        txtArea.setEditable(false);
         txtArea.setColumns(20);
         txtArea.setRows(5);
         jScrollPane1.setViewportView(txtArea);

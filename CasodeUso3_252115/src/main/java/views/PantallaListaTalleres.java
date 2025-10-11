@@ -16,6 +16,7 @@ import models.Taller;
 /**
  *
  * @author sonic
+ * Vista para mostrar la lista de talleres disponibles y permitir su seleccion.
  */
 public class PantallaListaTalleres extends javax.swing.JFrame {
 
@@ -29,12 +30,17 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
         this.control = control;
         initComponents();
         this.setTitle("Inscripción de Talleres ISW");
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null); // Centra la ventana en la pantalla
 
         cargarTalleres();
-        botonInscribir.setEnabled(false);
+        botonInscribir.setEnabled(false); // Deshabilita hasta seleccionar un taller
     }
 
+    /**
+     * Carga dinamicamente la lista de talleres desde el controloador y crea botones interactivos.
+     * Cada botón muestra detalles al hacer clic en el, actualizando la seccion de detalles.
+     * Usa BoxLayout vertical para una lista scrolleable.
+     */
     private void cargarTalleres() {
         List<Taller> talleres = control.obtenerTalleres();
 
@@ -55,6 +61,12 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
         panelTalleres.setViewportView(panelDeBotones);
     }
 
+     /**
+     * Actualiza la seccion de detalles con la informacion del taller seleccionado.
+     * Habilita el boton de inscribir y almacena la seleccion para el siguiente paso.
+     * 
+     * @param taller El taller seleccionado por el usuario.
+     */
     private void mostrarDetallesTaller(Taller taller) {
         this.tallerSeleccionado = taller;
 
@@ -203,42 +215,6 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_botonInscribirActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaListaTalleres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaListaTalleres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaListaTalleres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaListaTalleres.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                GestorDeInscripcion gestor = new GestorDeInscripcion();
-                ControlInscripcion control = new ControlInscripcion(gestor);
-                new PantallaListaTalleres(control).setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonInscribir;

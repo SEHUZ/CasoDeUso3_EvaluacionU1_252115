@@ -5,6 +5,7 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -16,6 +17,8 @@ public class Inscripcion {
     private Alumno alumno;
     private Taller taller;
     private LocalDateTime fechaInscripcion;
+    
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public Inscripcion(String folio, Alumno alumno, Taller taller, LocalDateTime fechaInscripcion) {
         this.folio = folio;
@@ -41,6 +44,10 @@ public class Inscripcion {
 
     public LocalDateTime getFechaInscripcion() {
         return fechaInscripcion;
+    }
+    
+    public String getFechaInscripcionFormateada() {
+        return fechaInscripcion.format(FORMATO_FECHA);
     }
     
     

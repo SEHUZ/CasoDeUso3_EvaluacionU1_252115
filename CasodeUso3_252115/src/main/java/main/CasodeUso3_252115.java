@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.casodeuso3_252115;
+package main;
 
 import controllers.ControlInscripcion;
 import models.GestorDeInscripcion;
