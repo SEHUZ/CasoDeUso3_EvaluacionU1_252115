@@ -9,9 +9,11 @@ import java.awt.Dimension;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import models.GestorDeInscripcion;
-import models.Taller;
+import models.dtos.TallerDTO;
+import models.entitys.Taller;
 
 /**
  *
@@ -21,7 +23,7 @@ import models.Taller;
 public class PantallaListaTalleres extends javax.swing.JFrame {
 
     private ControlInscripcion control;
-    private Taller tallerSeleccionado;
+    private TallerDTO tallerSeleccionado;
 
     /**
      * Creates new form PantallaListaTalleres
@@ -42,12 +44,12 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
      * Usa BoxLayout vertical para una lista scrolleable.
      */
     private void cargarTalleres() {
-        List<Taller> talleres = control.obtenerTalleres();
+        List<TallerDTO> talleres = control.obtenerTalleres();
 
         JPanel panelDeBotones = new JPanel();
         panelDeBotones.setLayout(new BoxLayout(panelDeBotones, BoxLayout.Y_AXIS));
 
-        for (Taller taller : talleres) {
+        for (TallerDTO taller : talleres) {
             JButton botonTaller = new JButton(taller.getNombreTaller());
             botonTaller.setMaximumSize(new Dimension(Integer.MAX_VALUE, botonTaller.getMinimumSize().height)); // Para que ocupe todo el ancho
 
@@ -67,7 +69,7 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
      * 
      * @param taller El taller seleccionado por el usuario.
      */
-    private void mostrarDetallesTaller(Taller taller) {
+    private void mostrarDetallesTaller(TallerDTO taller) {
         this.tallerSeleccionado = taller;
 
         labelNombre.setText("Nombre del Taller: " + taller.getNombreTaller());
@@ -210,6 +212,7 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (tallerSeleccionado != null) {
         PantallaInscripcionTaller pantallaInscripcion = new PantallaInscripcionTaller(this.control, this.tallerSeleccionado);
+        control.setVistaInscripcion(pantallaInscripcion);
         pantallaInscripcion.setVisible(true);
         
     }
@@ -229,4 +232,5 @@ public class PantallaListaTalleres extends javax.swing.JFrame {
     private javax.swing.JScrollPane panelTalleres;
     private javax.swing.JTextArea txtField;
     // End of variables declaration//GEN-END:variables
+
 }

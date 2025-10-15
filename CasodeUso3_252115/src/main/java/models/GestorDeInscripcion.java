@@ -4,6 +4,11 @@
  */
 package models;
 
+import Observer.Observador;
+import Observer.Sujeto;
+import models.entitys.Alumno;
+import models.entitys.Inscripcion;
+import models.entitys.Taller;
 import excepciones.InscripcionException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,11 +19,13 @@ import java.util.List;
  *
  * @author sonic
  */
-public class GestorDeInscripcion {
+public class GestorDeInscripcion implements Sujeto {
 
     private List<Taller> talleres = new ArrayList<>();
     private List<Alumno> alumnos = new ArrayList<>();
     private List<Inscripcion> inscripciones = new ArrayList<>();
+
+    private List<Observador> observadores = new ArrayList<>();
 
     /**
      * Constructor que inicializa datos de ejemplo
@@ -97,6 +104,9 @@ public class GestorDeInscripcion {
 
         Inscripcion inscripcion = new Inscripcion("I-" + System.currentTimeMillis(), alumno, taller, LocalDateTime.now());
         inscripciones.add(inscripcion);
+        
+        notificarObservadores();
+
         return inscripcion;
     }
 
@@ -117,31 +127,21 @@ public class GestorDeInscripcion {
         return false;
     }
 
-    /**
-     * Genera el ticket de la inscripcion en forma de string con formato.
-     * 
-     * @param inscripocion La inscripcion.
-     * @return String del ticket
-     */
-    public String mostrarTicket(Inscripcion inscripcion) {
-        return "=========== INSTITUTO TECNOLOGICO DE SONORA ===========\n"
-                + "\n"
-                + "Campus: Itson Nainari\n"
-                + "\n"
-                + "================= TICKET DE INSCRIPCION =================\n"
-                + "Folio: " + inscripcion.getFolio() + "\n"
-                + "Alumno: " + inscripcion.getAlumno().getNombreCompleto() + "\n"
-                + "Taller: " + inscripcion.getTaller().getNombreTaller() + "\n"
-                + "Horario del taller: " + inscripcion.getTaller().getHorario() + "\n"
-                + "Fecha inscripción: " + inscripcion.getFechaInscripcionFormateada() + "\n"
-                + "Instructor del taller: " + inscripcion.getTaller().getNombreInstructor() + "\n"
-                + "\n"
-                + "=======================================================\n"
-                + "\n"
-                + "\n"
-                + "\n"
-                + "\n"
-                + "====================MUCHAS GRACIAS====================\n";
+    @Override
+    public void agregarObservador(Observador o) {
+        observadores.add(o);
+    }
+
+    @Override
+    public void eliminarObservador(Observador o) {
+        observadores.remove(o);
+    }
+
+    @Override
+    public void notificarObservadores() {
+        for (Observador observador : observadores) {
+            observador.actualizar();
+        }
     }
 
 }

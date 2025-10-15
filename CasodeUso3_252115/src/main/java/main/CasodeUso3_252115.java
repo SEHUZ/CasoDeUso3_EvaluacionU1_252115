@@ -18,6 +18,7 @@ public class CasodeUso3_252115 {
         GestorDeInscripcion modelo = new GestorDeInscripcion();
         ControlInscripcion control = new ControlInscripcion(modelo);
         PantallaListaTalleres pantalla = new PantallaListaTalleres(control);
+        modelo.agregarObservador(control);
         pantalla.setVisible(true);
     }
 }

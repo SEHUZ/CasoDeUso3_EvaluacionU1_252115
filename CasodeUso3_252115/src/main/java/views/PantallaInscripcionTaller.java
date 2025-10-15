@@ -7,12 +7,17 @@ package views;
 import controllers.ControlInscripcion;
 import excepciones.InscripcionException;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import models.Alumno;
-import models.Inscripcion;
-import models.Taller;
+import models.entitys.Alumno;
+import models.entitys.Inscripcion;
+import models.entitys.Taller;
+import models.dtos.AlumnoDTO;
+import models.dtos.InscripcionDTO;
+import models.dtos.TallerDTO;
 
 /**
  *
@@ -22,20 +27,24 @@ import models.Taller;
 public class PantallaInscripcionTaller extends javax.swing.JFrame {
 
     private ControlInscripcion control;
-    private Taller tallerAInscribir;
-    private Alumno alumnoEncontrado;
+    private TallerDTO tallerAInscribir;
+    private AlumnoDTO alumnoEncontrado;
 
     /**
      * Creates new form PantallaInscripcionTaller
      */
-    public PantallaInscripcionTaller(ControlInscripcion control, Taller taller) {
+    public PantallaInscripcionTaller(ControlInscripcion control, TallerDTO taller) {
         this.control = control;
         this.tallerAInscribir = taller;
-        
-        
-
         initComponents();
         configuracionInicial();
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                control.clearVistaInscripcion();
+            }
+        });
     }
 
     private void configuracionInicial() {
@@ -75,7 +84,7 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
 
         try {
             // controlador busca al alumno
-            Alumno alumno = control.buscarAlumnoPorId(idAlumno);
+            AlumnoDTO alumno = control.buscarAlumnoPorId(idAlumno);
             this.alumnoEncontrado = alumno;
 
             // Si lo encuentra, mostramos sus datos y habilitamos el boton
@@ -92,10 +101,10 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
         }
     }
 
-    private String formatearDatosAlumno(Alumno alumno) {
+    private String formatearDatosAlumno(AlumnoDTO alumno) {
         return "============ DATOS DEL ALUMNO ENCONTRADO ============\n\n"
                 + "ID: \t" + alumno.getIdAlumno() + "\n"
-                + "Nombre: \t" + alumno.getNombreCompleto() + "\n"
+                + "Nombre: \t" + alumno.getNombre() + " " + alumno.getApellidoPaterno() + " " + alumno.getApellidoMaterno() + "\n"
                 + "Semestre: \t" + alumno.getSemestre() + "\n"
                 + "Programa: \t" + alumno.getProgramaEducativo() + "\n\n"
                 + "=======================================================\n"
@@ -199,7 +208,7 @@ public class PantallaInscripcionTaller extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (alumnoEncontrado != null && tallerAInscribir != null) {
             try {
-                Inscripcion inscripcion = control.registrarInscripcion(alumnoEncontrado, tallerAInscribir);
+                InscripcionDTO inscripcion = control.registrarInscripcion(alumnoEncontrado, tallerAInscribir);
 
                 String textoTicket = control.generarTicket(inscripcion);
 

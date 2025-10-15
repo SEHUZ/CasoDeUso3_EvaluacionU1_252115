@@ -4,12 +4,21 @@
  */
 package controllers;
 
+import Observer.Observador;
 import excepciones.InscripcionException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import models.Alumno;
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
+import mappers.mapperEntityToDTO;
+import models.entitys.Alumno;
 import models.GestorDeInscripcion;
-import models.Inscripcion;
-import models.Taller;
+import models.entitys.Inscripcion;
+import models.entitys.Taller;
+import models.dtos.AlumnoDTO;
+import models.dtos.InscripcionDTO;
+import models.dtos.TallerDTO;
+import views.PantallaInscripcionTaller;
 
 /**
  *
@@ -18,12 +27,24 @@ import models.Taller;
  * Controlador principal para manejar las operaciones de inscripción en la
  * aplicación.
  */
-public class ControlInscripcion {
+public class ControlInscripcion implements Observador {
 
     private GestorDeInscripcion gestor;
+    private mapperEntityToDTO mapper;
+
+    private PantallaInscripcionTaller vistaInscripcion;
 
     public ControlInscripcion(GestorDeInscripcion gestor) {
         this.gestor = gestor;
+        this.mapper = new mapperEntityToDTO();
+    }
+
+    public void setVistaInscripcion(PantallaInscripcionTaller vista) {
+        this.vistaInscripcion = vista;
+    }
+
+    public void clearVistaInscripcion() {
+        this.vistaInscripcion = null;
     }
 
     /**
@@ -32,8 +53,11 @@ public class ControlInscripcion {
      *
      * @return Lista de Talleres disponibles.
      */
-    public List<Taller> obtenerTalleres() {
-        return gestor.obtenerTalleresDisponibles();
+    public List<TallerDTO> obtenerTalleres() {
+        return gestor.obtenerTalleresDisponibles()
+                .stream()
+                .map(mapper::toTallerDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -44,7 +68,7 @@ public class ControlInscripcion {
      * @throws InscripcionException si el id es invalido o no se encuentra el
      * alumno.
      */
-    public Alumno buscarAlumnoPorId(String idAlumno) throws InscripcionException {
+    public AlumnoDTO buscarAlumnoPorId(String idAlumno) throws InscripcionException {
         if (idAlumno == null || idAlumno.isBlank()) {
             throw new InscripcionException("Debe ingresar un ID de alumno.");
         }
@@ -54,29 +78,54 @@ public class ControlInscripcion {
             throw new InscripcionException("No se encontró un alumno con el ID: " + idAlumno);
         }
 
-        return alumno;
+        return mapper.toAlumnoDTO(alumno);
     }
 
     /**
-     * Registra una nueva inscripción delegando la responsabilidad al modelo
+     * Registra una nueva inscripcion
      *
      * @param alumno El alumno a inscribir y encontrado
      * @param taller El taller seleccionado.
      * @return La Inscripcion registrada.
      * @throws InscripcionException
      */
-    public Inscripcion registrarInscripcion(Alumno alumno, Taller taller) throws InscripcionException {
-        return gestor.inscribirAlumno(alumno, taller);
+    public InscripcionDTO registrarInscripcion(AlumnoDTO alumnoDTO, TallerDTO tallerDTO) throws InscripcionException {
+        Alumno alumno = gestor.obtenerAlumnoPorId(alumnoDTO.getIdAlumno());
+        Taller taller = gestor.obtenerTallerPorNombre(tallerDTO.getNombreTaller());
+
+        Inscripcion nuevaInscripcion = gestor.inscribirAlumno(alumno, taller);
+
+        return mapper.toInscripcionDTO(nuevaInscripcion);
     }
 
-    /**
-     * Genera el ticket de inscripción como String, listo para ser mostrado en la Vista.
-     * Delega la generación al modelo, pero el controlador coordina el flujo post-inscripción.
-     * 
-     * @param inscripcion La inscripción recién creada.
-     * @return String formateado del ticket (para impresión o display en UI).
-     */
-    public String generarTicket(Inscripcion inscripcion) {
-        return gestor.mostrarTicket(inscripcion);
+    public String generarTicket(InscripcionDTO inscripcion) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return "=========== INSTITUTO TECNOLOGICO DE SONORA ===========\n"
+                + "\n"
+                + "Campus: Itson Nainari\n"
+                + "\n"
+                + "================= TICKET DE INSCRIPCION =================\n"
+                + "Folio: " + inscripcion.getFolio() + "\n"
+                + "Alumno: " + inscripcion.getAlumno().getNombre() + " " + inscripcion.getAlumno().getApellidoPaterno() + " " + inscripcion.getAlumno().getApellidoPaterno() + "\n"
+                + "Taller: " + inscripcion.getTaller().getNombreTaller() + "\n"
+                + "Horario del taller: " + inscripcion.getTaller().getHorario() + "\n"
+                + "Fecha inscripción: " + inscripcion.getFechaInscripcion().format(formatter) + "\n"
+                + "Instructor del taller: " + inscripcion.getTaller().getNombreInstructor() + "\n"
+                + "\n"
+                + "=======================================================\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "\n"
+                + "====================MUCHAS GRACIAS====================\n";
     }
+
+    @Override
+    public void actualizar() {
+        if (vistaInscripcion != null) {
+            JOptionPane.showMessageDialog(vistaInscripcion, "¡Una nueva inscripción ha sido registrada en el sistema!", "Notificación", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
 }

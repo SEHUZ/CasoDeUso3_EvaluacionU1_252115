@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package models;
+package models.dtos;
 
 import java.time.LocalDate;
 
@@ -10,16 +10,16 @@ import java.time.LocalDate;
  *
  * @author sonic
  */
-public class Taller {
-    
-    private String idTaller;
-    private String nombreTaller;
-    private String nombreInstructor;
-    private LocalDate fecha;
-    private String horario;
-    private String descripcion;
+public class TallerDTO {
 
-    public Taller(String idTaller, String nombreTaller, String nombreInstructor, LocalDate fecha, String horario, String descripcion) {
+    private final String idTaller;
+    private final String nombreTaller;
+    private final String nombreInstructor;
+    private final LocalDate fecha;
+    private final String horario;
+    private final String descripcion;
+
+    public TallerDTO(String idTaller, String nombreTaller, String nombreInstructor, LocalDate fecha, String horario, String descripcion) {
         this.idTaller = idTaller;
         this.nombreTaller = nombreTaller;
         this.nombreInstructor = nombreInstructor;
@@ -28,12 +28,10 @@ public class Taller {
         this.descripcion = descripcion;
     }
 
-    public Taller() {
-    }
-
     public String getIdTaller() {
         return idTaller;
     }
+    
 
     public String getNombreTaller() {
         return nombreTaller;
@@ -57,9 +55,9 @@ public class Taller {
 
     @Override
     public String toString() {
-        return "Taller{" + "idTaller=" + idTaller + ", nombreTaller=" + nombreTaller + ", nombreInstructor=" + nombreInstructor + ", fecha=" + fecha + ", horario=" + horario + ", descripcion=" + descripcion + '}';
+        return "TallerDTO{" + ", nombreTaller=" + nombreTaller + ", nombreInstructor=" + nombreInstructor + ", fecha=" + fecha + ", horario=" + horario + ", descripcion=" + descripcion + '}';
     }
     
     
-    
+
 }
